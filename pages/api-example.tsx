@@ -1,19 +1,27 @@
-import Layout from "../components/layout"
+import Link from "next/link";
+import Layout from "../components/layout";
 
-export default function ApiExamplePage() {
+export default function IndexPage(props) {
+  console.log(props);
   return (
-    <Layout>
-      <h1>API Example</h1>
-      <p>The examples below show responses from the example API endpoints.</p>
-      <p>
-        <em>You must be signed in to see responses.</em>
-      </p>
-      <h2>Session</h2>
-      <p>/api/examples/session</p>
-      <iframe src="/api/examples/session" />
-      <h2>JSON Web Token</h2>
-      <p>/api/examples/jwt</p>
-      <iframe src="/api/examples/jwt" />
-    </Layout>
-  )
+    <div>
+      <Layout>
+        <div>
+          {props.data.content || "No content" }
+          <br/>
+          {props.data.error || "No error" }
+        </div>
+      </Layout>
+    </div>
+  );
+}
+
+export async function getServerSideProps(ctx) {
+  let res = await fetch("http://localhost:3000/api/examples/protected");
+  if (res.ok) {
+    let data = await res.json();
+    return { props: { data } };
+  }
+
+  return { props: {} };
 }
